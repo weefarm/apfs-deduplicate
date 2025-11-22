@@ -1,9 +1,56 @@
 MIT License
 
-Copyright (c) 2025 weefarm
+Copyright (c) 2024 weefarm
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ATTRIBUTION AND DERIVATIVE WORK NOTICE:
+
+This software is a fork derived from work originally created by dchevell
+(https://bitbucket.org/dchevell/apfs-deduplicate/) and later forked by
+capyvara (https://github.com/capyvara/apfs-deduplicate).
+
+To the best of this author's knowledge, the original work was distributed
+without an explicit license. The original repository appears to be no longer
+accessible (the Bitbucket repository link has not been verified to be active).
+This fork includes modifications and enhancements made by the current maintainer.
+While this license covers the modifications and overall distribution of this
+fork, users should be aware that the original unlicensed portions of the
+codebase may have different legal status depending on jurisdiction.
+
+For attribution purposes, please maintain credit to the original creators
+as documented in the README.md file.
+
+---
+
+PYTHON STANDARD LIBRARY DEPENDENCIES:
+
+This software uses only modules from Python's standard library:
+- hashlib, os, subprocess, glob, argparse, shutil, filecmp, sys
+
+These modules are part of the Python standard library and are licensed under
+the Python Software Foundation License (PSF License), which is a permissive
+BSD-style license compatible with the MIT License. The PSF License allows
+use, modification, and distribution without additional restrictions.
+
+No external third-party libraries or dependencies are required beyond
+Python 3 itself.
+
