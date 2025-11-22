@@ -5,11 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
-            "type": "python",
+            "name": "Python: Test 1 - *.bin files",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
-            "args": ["/Applications/Unity/**"],
+            "program": "${workspaceFolder}/deduplicate.py",
+            "args": ["--dry-run", "*.bin"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Test 2 - Recursive (-R)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/deduplicate.py",
+            "args": ["--dry-run", "-R", "testdir"],
+            "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
         }
     ]
