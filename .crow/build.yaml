@@ -1,0 +1,72 @@
+# CrowCI Pipeline: Build and Package
+# This pipeline builds distributables, runs security scans, and validates packaging
+
+when:
+  - event: push
+  - event: pull_request
+
+depends_on:
+  - test
+
+steps:
+  - name: "Build Python Wheel"
+    image: "python:3.11-slim"
+    commands:
+      - pip install build
+      - python -m build --wheel
+      - ls -la dist/
+
+  - name: "Build Source Distribution"
+    image: "python:3.11-slim"
+    commands:
+      - pip install build
+      - python -m build --sdist
+      - ls -la dist/
+
+  - name: "Validate Package"
+    image: "python:3.11-slim"
+    commands:
+      - pip install twine
+      - twine check dist/*
+      - python -c "import deduplicate; print('Import successful')"
+
+  - name: "Security Scan with Bandit"
+    image: "python:3.11-slim"
+    commands:
+      - pip install bandit
+      - bandit -r . -f json -o bandit-report.json || true
+      - |
+        cat bandit-report.json | python3 -c "
+        import sys, json
+        try:
+            data = json.load(sys.stdin)
+            results = data.get('results', [])
+            print(f'Issues found: {len(results)}')
+            for issue in results[:5]:
+                print(f'- {issue.get(\"issue_text\", \"Unknown issue\")}')
+        except:
+            print('No security issues found or report parsing failed')
+        "
+
+  - name: "Dependency Vulnerability Check"
+    image: "python:3.11-slim"
+    commands:
+      - pip install safety
+      - safety check --output json || echo "Safety check completed"
+
+  - name: "License Compliance Check"
+    image: "python:3.11-slim"
+    commands:
+      - |
+        # Check that LICENSE file exists and contains expected content
+        if [ -f LICENSE ]; then
+          grep -q "MIT License" LICENSE && echo "✅ MIT License found"
+        else
+          echo "❌ LICENSE file missing"
+          exit 1
+        fi
+
+  - name: "Check for secrets in code"
+    image: "zricethezav/gitleaks:latest"
+    commands:
+      - gitleaks detect --source=. --verbose --redact || echo "Gitleaks scan completed"

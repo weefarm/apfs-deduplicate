@@ -1,0 +1,40 @@
+# CrowCI Pipeline: Code Quality and Linting
+# This pipeline validates code quality, runs linters, and checks formatting
+
+when:
+  - event: push
+  - event: pull_request
+
+steps:
+  - name: "Python Syntax Check"
+    image: "python:3.11-slim"
+    commands:
+      - python -m py_compile deduplicate.py
+
+  - name: "Python Linting with Flake8"
+    image: "python:3.11-slim"
+    commands:
+      - pip install flake8
+      - flake8 deduplicate.py --max-line-length=120 --ignore=E501,W503
+
+  - name: "Type Checking with MyPy"
+    image: "python:3.11-slim"
+    commands:
+      - pip install mypy
+      - mypy deduplicate.py --ignore-missing-imports
+
+  - name: "Shell Script Linting"
+    image: "koalaman/shellcheck-alpine:latest"
+    commands:
+      - shellcheck test.sh setup-test-files.sh setup-test-files-macos.sh
+
+  - name: "YAML Validation"
+    image: "cytopia/yamllint:latest"
+    commands:
+      - yamllint . --ignore-path=.git/ --ignore-path=.mypy_cache/ --ignore-path=.vscode/ --ignore-path=.qodo/ --ignore-path=.cursor/
+
+  - name: "Python Import Sorting Check"
+    image: "python:3.11-slim"
+    commands:
+      - pip install isort
+      - isort --check-only --diff deduplicate.py

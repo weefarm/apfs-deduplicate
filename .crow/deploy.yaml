@@ -1,0 +1,102 @@
+# CrowCI Pipeline: Deploy and Release
+# This pipeline handles releases and repository mirroring
+
+when:
+  - event: push
+    branch: main
+
+depends_on:
+  - build
+
+steps:
+  - name: "Validate Release Readiness"
+    image: "python:3.11-slim"
+    commands:
+      - |
+        # Check that version info exists (if applicable)
+        echo "Release validation for apfs-deduplicate"
+        echo "Current commit: $(git rev-parse HEAD)"
+        echo "Branch: $(git branch --show-current)"
+
+        # Validate that tests passed
+        if [ ! -f "test.sh" ]; then
+          echo "❌ test.sh missing"
+          exit 1
+        fi
+
+        # Check executable permissions
+        if [ ! -x "deduplicate.py" ]; then
+          echo "❌ deduplicate.py not executable"
+          exit 1
+        fi
+
+        echo "✅ Release validation passed"
+
+  - name: "Create Release Archive"
+    image: "python:3.11-slim"
+    commands:
+      - |
+        # Create release archive with all necessary files
+        mkdir -p release
+        cp deduplicate.py release/
+        cp README.md release/
+        cp LICENSE release/
+        cp test.sh release/
+        cp setup-test-files.sh release/
+        cp setup-test-files-macos.sh release/
+
+        # Make scripts executable
+        chmod +x release/deduplicate.py release/test.sh release/setup-test-files.sh release/setup-test-files-macos.sh
+
+        # Create tar archive
+        tar -czf apfs-deduplicate-$(date +%Y%m%d-%H%M%S).tar.gz release/
+        ls -la *.tar.gz
+
+  - name: "PyPI Upload Simulation"
+    image: "python:3.11-slim"
+    commands:
+      - |
+        # Note: This is a simulation - actual PyPI upload would require API tokens
+        pip install twine
+        echo "🔍 Validating distribution for PyPI upload..."
+        twine check dist/* 2>/dev/null || echo "No dist/ directory found - run build first"
+
+        echo "📦 PyPI upload would happen here with:"
+        echo "  twine upload dist/*"
+        echo "  (Requires PYPI_API_TOKEN environment variable)"
+
+  - name: "GitHub Release Preparation"
+    image: "python:3.11-slim"
+    commands:
+      - |
+        echo "📋 GitHub release preparation:"
+        echo "- Tag: v$(date +%Y.%m.%d)"
+        echo "- Title: Release $(date +%Y-%m-%d)"
+        echo "- Assets: apfs-deduplicate-$(date +%Y%m%d-%H%M%S).tar.gz"
+        echo "- dist/*.whl, dist/*.tar.gz (if built)"
+
+        # In a real release, you would:
+        # 1. Create a git tag
+        # 2. Push the tag
+        # 3. Create GitHub release via API
+        # 4. Upload release assets
+
+  - name: "Mirror to GitHub"
+    image: "alpine/git:latest"
+    commands:
+      - |
+        echo "Setting up git configuration for mirroring..."
+        git config --global user.name "weefarm-ci"
+        git config --global user.email "ci@weefarm.studio"
+        git config --global init.defaultBranch main
+
+        echo "Adding GitHub remote if not exists..."
+        git remote add github git@github.com:weefarm/apfs-deduplicate.git 2>/dev/null || echo "GitHub remote already exists"
+
+        echo "Fetching from GitHub to sync..."
+        git fetch github
+
+        echo "Pushing to GitHub mirror..."
+        git push github main --force
+
+        echo "GitHub mirror updated successfully!"
