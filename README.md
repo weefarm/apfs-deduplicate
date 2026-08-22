@@ -112,4 +112,5 @@ This tool was originally created by dchevell and later forked by capyvara. This 
 * Primary repository: ssh://git@codefloe.com/weefarm/apfs-deduplicate.git
 * GitHub mirror: https://github.com/weefarm/apfs-deduplicate
 
-Note: The original work was distributed without an explicit license. This fork includes modifications and enhancements including recursive search flags and DMG image support. This repository is maintained independently and no longer tracks the upstream capyvara repository.
+Note: The original work was distributed without an explicit license. This fork includes modifications and enhancements including recursive search flags and DMG image support. This repository is maintained independently and no 
+longer tracks the upstream capyvara repository.
